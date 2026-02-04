@@ -1,28 +1,31 @@
+// server.js
 const express = require("express");
 const http = require("http");
 const WebSocket = require("ws");
-const path = require("path");
 require("dotenv").config();
 
 const PORT = process.env.PORT || 5000;
+
 const app = express();
 
-// Serve React frontend from 'dist'
-app.use(express.static(path.join(__dirname, "dist")));
+// Simple route to test server
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "dist", "index.html"));
+  res.send("WebSocket server is running");
 });
 
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
+
 const clients = new Set();
 
 wss.on("connection", (ws) => {
   console.log("Client connected");
   clients.add(ws);
 
-  ws.send(JSON.stringify({ message: "Welcome to ChatApp!", sender: "system", time: new Date().toISOString() }));
+  // Send welcome message
+  ws.send(JSON.stringify({ message: "Welcome to ChatApp!", sender: "system" }));
 
+  // Broadcast received messages
   ws.on("message", (msg) => {
     let data;
     try {
@@ -30,9 +33,11 @@ wss.on("connection", (ws) => {
     } catch {
       data = { message: msg, sender: "unknown" };
     }
+
+    // Add timestamp
     data.time = new Date().toISOString();
 
-    // Broadcast to all other clients
+    // Broadcast to all clients
     clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
         client.send(JSON.stringify(data));
