@@ -1,58 +1,56 @@
 // server.js
-const express = require('express');
-const http = require('http');
-const WebSocket = require('ws');
-require('dotenv').config(); // Add this at the top
+const express = require("express");
+const http = require("http");
+const WebSocket = require("ws");
+require("dotenv").config();
 
-
-
-// Use PORT from environment or fallback to 5000
 const PORT = process.env.PORT || 5000;
 
-// Create Express app
 const app = express();
 
-// Optional: simple route to check server
-app.get('/', (req, res) => {
-  res.send('WebSocket server is running');
+// Simple route to test server
+app.get("/", (req, res) => {
+  res.send("WebSocket server is running");
 });
 
-// Create HTTP server for Express
 const server = http.createServer(app);
-
-// Create WebSocket server
 const wss = new WebSocket.Server({ server });
 
-// Track connected clients
 const clients = new Set();
 
-wss.on('connection', (ws) => {
-  console.log('Client connected');
+wss.on("connection", (ws) => {
+  console.log("Client connected");
   clients.add(ws);
 
-  // Receive messages from clients
-  ws.on('message', (message) => {
-    console.log('Received:', message.toString());
+  // Send welcome message
+  ws.send(JSON.stringify({ message: "Welcome to ChatApp!", sender: "system" }));
 
-    // Broadcast message to all connected clients
+  // Broadcast received messages
+  ws.on("message", (msg) => {
+    let data;
+    try {
+      data = JSON.parse(msg);
+    } catch {
+      data = { message: msg, sender: "unknown" };
+    }
+
+    // Add timestamp
+    data.time = new Date().toISOString();
+
+    // Broadcast to all clients
     clients.forEach((client) => {
-      if (client !== ws && client.readyState === WebSocket.OPEN) {
-        client.send(message.toString());
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(JSON.stringify(data));
       }
     });
   });
 
-  // Handle client disconnect
-  ws.on('close', () => {
-    console.log('Client disconnected');
+  ws.on("close", () => {
+    console.log("Client disconnected");
     clients.delete(ws);
   });
-
-  // Send a welcome message
-  ws.send('Welcome to WebSocket server!');
 });
 
-// Start the server
 server.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
