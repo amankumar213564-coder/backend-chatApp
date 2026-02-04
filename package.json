@@ -2,22 +2,17 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "A backend server with Express and WebSocket support",
-  "main": "index.js",
+  "type": "commonjs",
+  "main": "server.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js"
   },
   "keywords": ["express", "websocket", "backend"],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
   "dependencies": {
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "ws": "^8.19.0"
-  },
-  "devDependencies": {
-    "nodemon": "^3.0.1"
   }
 }
