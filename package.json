@@ -7,12 +7,17 @@
   "scripts": {
     "start": "node server.js"
   },
-  "keywords": ["express", "websocket", "backend"],
+  "keywords": [
+    "express",
+    "websocket",
+    "backend"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
+    "mongoose": "^9.2.1",
     "ws": "^8.19.0"
   }
 }
