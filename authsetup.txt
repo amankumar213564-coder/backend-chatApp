@@ -1,0 +1,9 @@
+1. create the methods to generate the tokens in userSchema
+2. create the utility to verify the jwt tokens 
+3. create the user login service in which we are going to generate the tokens
+4. create the user login controller, the cookies will be set in controllers
+5. create the middleware to check the user is authorized or not and for adding the user field in req object 
+6. add the middleware on the routes that are needed to be protected 
+7. now we are going to use the req.user._id to access the user id in contollers <==
+8. create the route and controller to refresh the expired access token of the user if the refresh token is still valid (this will only be called from frontend)
+9. create the logout controller to remove the refresh token of the user from DB and clear the cookies from the browser
